@@ -1,0 +1,29 @@
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My Cars</h2>
+    
+    <!-- Add Button -->
+    <div class="d-flex justify-content-between mb-3">
+      <button class="btn btn-primary" (click)="openDialog()">Add</button>
+      
+      <!-- Search Bar -->
+      <div class="d-flex">
+        <input type="text" [(ngModel)]="searchQuery" class="form-control me-2" placeholder="Search cars..." />
+        <button class="btn btn-outline-primary" (click)="searchCars()">Search</button>
+      </div>
+    </div>
+    
+    <!-- Car List -->
+    <div class="row">
+      <div *ngFor="let car of cars" class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3 class="card-title">{{ car.product_title }}</h3>
+            <p class="card-text">{{ car.product_description }}</p>
+            <button class="btn btn-info" (click)="viewCar(car.id)">View Details</button>
+            <button class="btn btn-danger" (click)="deleted(car.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

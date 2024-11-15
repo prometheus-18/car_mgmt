@@ -1,0 +1,35 @@
+.car-create-container {
+    .form-section {
+      .row {
+        .col-form-label {
+          font-weight: bold;
+        }
+      }
+    }
+  
+    mat-form-field {
+      margin-bottom: 1rem;
+    }
+  
+    input[type="file"] {
+      margin-top: 0.5rem;
+    }
+  
+    .d-flex {
+      button {
+        width: auto;
+        padding: 0.5rem 1.25rem;
+      }
+  
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+  
+      .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+      }
+    }
+  }
+  
