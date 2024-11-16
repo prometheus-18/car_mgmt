@@ -32,18 +32,30 @@ export class CarListComponent implements OnInit {
   }
 
   // View car details (you can later implement a details page or modal)
-  viewCar(carId: string): void {
-    this.carService.getCar(carId).subscribe((carDetails: any) => {
+  viewCar(carId: any,val:any): void {
+    // console.log(val,'val');
+ 
       // Open a dialog to display the car details
-      const dialogRef = this.dialog.open(CarDetailsComponent, {
-        width: '500px', // Adjust width as needed
-        data: carDetails  // Pass the car details to the dialog
-      });
+      // const dialogRef = this.dialog.open(CarCreateComponent, {
+      //   width: '500px', // Adjust width as needed
+      //   data: carId,  // Pass the car details to the dialog
+      //   checkVal:val
+      // });
 
-      dialogRef.afterClosed().subscribe(() => {
-        // Optionally, do something when the dialog is closed, e.g., refresh the list
+      // dialogRef.afterClosed().subscribe(() => {
+      //   // Optionally, do something when the dialog is closed, e.g., refresh the list
+      // });
+   
+
+      const dialogRef = this.dialog.open(CarCreateComponent, {
+        data: { id: carId,checkVal:val },
+  
+        width: '500px',
       });
-    });
+  
+      dialogRef.afterClosed().subscribe((result) => {
+        
+      });
   }
 
   // Open dialog to create a new car
@@ -72,4 +84,6 @@ export class CarListComponent implements OnInit {
       );
     }
   }
-}
+
+  }
+

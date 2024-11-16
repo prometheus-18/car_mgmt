@@ -1,52 +1,88 @@
 <div class="container mt-4">
-    <div class="car-create-container">
-      <form [formGroup]="carForm" (ngSubmit)="createCar()">
-        <div class="form-section m-3">
-          
-          <!-- Title Field -->
-          <div class="row mb-3">
-            <label class="col-12 col-md-4 col-form-label" for="title">Title</label>
-            <div class="col-12 col-md-8">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Title</mat-label>
-                <input matInput type="text" id="title" formControlName="title" class="form-control" />
-                <mat-error *ngIf="titleControl?.hasError('required')">*Required!</mat-error>
-                <mat-error *ngIf="titleControl?.hasError('minlength')">*Title must be at least 3 characters long.</mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-  
-          <!-- Description Field -->
-          <div class="row mb-3">
-            <label class="col-12 col-md-4 col-form-label" for="description">Description</label>
-            <div class="col-12 col-md-8">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Description</mat-label>
-                <textarea matInput formControlName="description" id="description" class="form-control"></textarea>
-                <mat-error *ngIf="descriptionControl?.hasError('required')">*Required!</mat-error>
-                <mat-error *ngIf="descriptionControl?.hasError('minlength')">*Description must be at least 10 characters long.</mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-  
-          <!-- Images Field -->
-          <div class="row mb-3">
-            <label class="col-12 col-md-4 col-form-label" for="images">Images</label>
-            <div class="col-12 col-md-8">
-              <input type="file" id="images" (change)="onImageSelect($event)" multiple class="form-control" />
-            </div>
+  <h2 class="text-center">{{ data ? 'Edit Car' : 'Create Car' }}</h2> <!-- Dynamic title for Create/Edit -->
+
+  <form [formGroup]="carForm" (ngSubmit)="createCar()">
+    <div class="form-section m-3">
+
+      <!-- Title Field -->
+      <div class="row mb-3">
+        <label class="col-12 col-md-4 col-form-label" for="title">Title</label>
+        <div class="col-12 col-md-8">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Title</mat-label>
+            <input
+              matInput
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-control"
+            />
+            <mat-error *ngIf="titleControl?.hasError('required')">*Required!</mat-error>
+            <mat-error *ngIf="titleControl?.hasError('minlength')">*Title must be at least 3 characters long.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Description Field -->
+      <div class="row mb-3">
+        <label class="col-12 col-md-4 col-form-label" for="description">Description</label>
+        <div class="col-12 col-md-8">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              formControlName="description"
+              id="description"
+              class="form-control"
+            ></textarea>
+            <mat-error *ngIf="descriptionControl?.hasError('required')">*Required!</mat-error>
+            <mat-error *ngIf="descriptionControl?.hasError('minlength')">*Description must be at least 10 characters long.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Images Field -->
+      <div class="row mb-3">
+        <label class="col-12 col-md-4 col-form-label" for="images">Images</label>
+        <div class="col-12 col-md-8">
+          <input
+            type="file"
+            id="images"
+            (change)="onImageSelect($event)"
+            multiple
+            class="form-control"
+          />
+          <div *ngIf="selectedImages.length > 0" class="mt-2">
+            <strong>Selected Images:</strong>
+            <ul>
+              <li *ngFor="let image of selectedImages">{{ image.name }}</li>
+            </ul>
           </div>
         </div>
-  
-        <!-- Submit and Close buttons -->
-        <div class="d-flex justify-content-end mt-4">
-          <button mat-raised-button color="primary" type="submit" [disabled]="carForm.invalid" class="btn btn-primary mx-2">
-            Create Car
-          </button>
-          <button mat-button mat-dialog-close mat-raised-button color="warn" class="btn btn-danger">
-            Close
-          </button>
-        </div>
-      </form>
+      </div>
+      
     </div>
-  </div>
+
+    <!-- Submit and Close buttons -->
+    <div class="d-flex justify-content-end mt-4">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="carForm.invalid"
+        class="btn btn-primary mx-2"
+      >
+        {{ data ? 'Update Car' : 'Create Car' }} <!-- Dynamic button text -->
+      </button>
+      <button
+        mat-button
+        mat-dialog-close
+        mat-raised-button
+        color="warn"
+        class="btn btn-danger"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

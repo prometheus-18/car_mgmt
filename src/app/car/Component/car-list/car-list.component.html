@@ -19,8 +19,9 @@
           <div class="card-body">
             <h3 class="card-title">{{ car.product_title }}</h3>
             <p class="card-text">{{ car.product_description }}</p>
-            <button class="btn btn-info" (click)="viewCar(car.id)">View Details</button>
-            <button class="btn btn-danger" (click)="deleted(car.id)">Delete</button>
+            <button class="btn btn-info" (click)="viewCar(car.id,'view')">View Details</button>
+            <button style="margin: 10px;" class="btn btn-danger" (click)="deleted(car.id)">Delete</button>
+            <button class="btn btn-danger" (click)="viewCar(car.id,'edit')">Edit</button>
           </div>
         </div>
       </div>

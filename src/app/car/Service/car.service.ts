@@ -11,6 +11,7 @@ export class CarService {
   private getAllProducts = 'http://192.168.20.78:3000/api/v1/getAllProducts';
   private deleteProducts = 'http://192.168.20.78:3000/api/v1/deleteProducts';
   private getProductsbyId = 'http://192.168.20.78:3000/api/v1/getProductsbyId';
+  private updateProducts = 'http://192.168.20.78:3000/api/v1/updateProducts';
 
   constructor(private http: HttpClient) {}
 
@@ -26,8 +27,8 @@ export class CarService {
     return this.http.post(`${this.createproducts}`, data);
   }
 
-  updateCar(id: string, data: any) {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+  updateCar(id: string,data:any) {
+    return this.http.put(`${this.updateProducts}/${id}`,data);
   }
 
   deleteCar(id: string) {

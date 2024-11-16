@@ -1,25 +1,43 @@
-import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CarService } from '../../Service/car.service';  // Ensure correct path
-import { Router } from '@angular/router'; 
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CarService } from '../../Service/car.service';
+import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CarListComponent } from '../car-list/car-list.component';
 
 @Component({
   selector: 'app-car-create',
   templateUrl: './car-create.component.html',
-  styleUrls: ['./car-create.component.scss']
+  styleUrls: ['./car-create.component.scss'],
 })
-export class CarCreateComponent {
+export class CarCreateComponent implements OnInit {
   carForm: FormGroup;
-  selectedImages: File[] = []; // Array to hold selected files
+  selectedImages: File[] = [];
+  isEditMode: boolean = false;
 
-  constructor(private fb: FormBuilder, private carService: CarService,private router: Router,private dialogRef: MatDialogRef<CarListComponent>) {
+  // Define the API base URL directly here
+  private apiUrl: string = 'http://192.168.20.78:3000'; // Your backend API URL
+
+  constructor(
+    private fb: FormBuilder,
+    private carService: CarService,
+    private router: Router,
+    private dialogRef: MatDialogRef<CarListComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.carForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
-      images: [''] // You can leave the images as an empty string
+      images: [''],
     });
+  }
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.isEditMode = true;
+      this.populateForm(this.data);
+      this.loadCarDetails(this.data.id);
+    }
   }
 
   get titleControl() {
@@ -34,7 +52,13 @@ export class CarCreateComponent {
     return this.carForm.get('images');
   }
 
-  // Handle file selection
+  public populateForm(data: any): void {
+    this.carForm.patchValue({
+      title: data.title,
+      description: data.description,
+    });
+  }
+
   onImageSelect(event: any): void {
     const files = event.target.files;
     if (files.length > 0) {
@@ -43,41 +67,72 @@ export class CarCreateComponent {
     }
   }
 
-  // Handle form submission
   createCar(): void {
     if (this.carForm.valid) {
       const formValues = this.carForm.value;
       const formData = new FormData();
 
-      // Append form values to FormData object
       formData.append('product_title', formValues.title);
       formData.append('product_description', formValues.description);
       formData.append('status', 'ACTIVE');
-      formData.append('user_id', '2'); // Hardcoded user ID, adjust as needed
-      formData.append('product_tag', '2'); // Hardcoded product tag, adjust as needed
+      formData.append('user_id', '2');
+      formData.append('product_tag', '2');
 
-      // Append selected image files to FormData
       this.selectedImages.forEach((file) => {
-        formData.append('product_image', file, file.name); // Append files as 'product_image[]' to indicate multiple images
+        formData.append('product_image', file, file.name);
       });
 
-      // Call the service to create the car
-      this.carService.createCar(formData).subscribe(
-        (response: any) => {
-          console.log('API Response:', response);
-          // After successful creation, navigate back to the list page
-          this.router.navigate(['car/car-list']);  // Adjust the URL path as needed for your list page
-
-          // Close the dialog after successful creation
-          this.dialogRef.close();  // Close the dialog
-        },
-        (error: any) => {
-          console.error('API Error:', error);
-          // Handle error (e.g., show an error message)
-        }
-      );
+      if (this.isEditMode) {
+        this.carService.updateCar(this.data.id, formData).subscribe(
+          (response: any) => {
+            console.log('Update Response:', response);
+            this.dialogRef.close(true);
+          },
+          (error: any) => {
+            console.error('Update Error:', error);
+          }
+        );
+      } else {
+        this.carService.createCar(formData).subscribe(
+          (response: any) => {
+            console.log('Create Response:', response);
+            this.dialogRef.close(true);
+          },
+          (error: any) => {
+            console.error('Create Error:', error);
+          }
+        );
+      }
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  loadCarDetails(carId: string): void {
+    this.carService.getCar(carId).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          console.log('Car Details:', response);
+
+          this.carForm.patchValue({
+            title: response.data.product_title,
+            description: response.data.product_description,
+          });
+
+          // Use the defined apiUrl here
+          const imageUrl = `${this.apiUrl}${response.data.product_image}`;
+
+          this.selectedImages = [new File([], imageUrl)];
+          this.carForm.patchValue({
+            images: imageUrl,
+          });
+
+          console.log('Image URL:', imageUrl);
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching car details:', error);
+      }
+    );
   }
 }
